@@ -63,6 +63,20 @@ const ChartWork2: React.FC<ChartWork2Props> = ({ work1, work2, work3, work4, wor
         borderWidth: 1,
       },
     ],
+    options:{
+      scales:{
+        yAxes:[{
+          ticks:{
+            beginAtZero:true
+          }
+        }],
+        xAxes:[{
+          ticks:{
+            beginAtZero:true
+          }
+        }]
+      }
+    }
   });
   return <Radar data={chartData} />;
 };

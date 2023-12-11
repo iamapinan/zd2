@@ -40,6 +40,20 @@ const ChartWork1: React.FC<ChartWork1Props> = ({ work1, work2, work3, work4, wor
         borderWidth: 1,
       },
     ],
+    options:{
+      scales:{
+        yAxes:[{
+          ticks:{
+            beginAtZero:true
+          }
+        }],
+        xAxes:[{
+          ticks:{
+            beginAtZero:true
+          }
+        }]
+      }
+    }
   });
 
   return <Pie data={chartData} />;

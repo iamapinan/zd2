@@ -16,6 +16,7 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation'
 
 import { useRouter } from 'next/navigation';
+import { fetchData } from 'next-auth/client/_utils';
 
 async function getData() {
   const res = await fetch('https://memberofhouse.newdice.co/api/say/getPtpUsers', {
@@ -31,24 +32,31 @@ async function getData() {
   }
   return res.json();
 }
-
-const getCountFieldWorkData = async () => {
-  const res = await fetch('http://localhost:3000/api/posts/fieldwork/count', {
+async function getSubData(area: string = '') {
+  if (area != '') {
+    area = '?area=' + area;
+  } else {
+    area = '';
+  }
+  const res = await fetch('https://memberofhouse.newdice.co/api/say/getStatUser' + area, {
     method: 'GET',
     headers: {
+      'X-SAYAPI-KEY': '69925e25035b3aa12060eb90eaf10d1f0e26210db3d29a77dd607a10ce38cb8f',
       'Content-Type': 'application/json',
     },
   });
+
   if (!res.ok) {
     throw new Error('Failed to fetch');
   }
-  // console.log(res);
   return res.json();
 }
-const getCountFieldWorkData2 = async () => {
-  const res = await fetch('http://localhost:3000/api/posts/fieldwork/count2', {
+
+const getCountFieldWorkData = async () => {
+  const res = await fetch('https://api.theengage.co/fieldWorkCount1', {
     method: 'GET',
     headers: {
+      'Authorization': '3f6871f77d7b4c51008232fe41ea4ebc',
       'Content-Type': 'application/json',
     },
   });
@@ -59,9 +67,10 @@ const getCountFieldWorkData2 = async () => {
   return res.json();
 }
 const getFieldWorkHistory = async () => {
-  const res = await fetch('http://localhost:3000/api/posts/fieldwork', {
+  const res = await fetch('https://api.theengage.co/getFieldWorkHistory', {
     method: 'GET',
     headers: {
+      'Authorization': '3f6871f77d7b4c51008232fe41ea4ebc',
       'Content-Type': 'application/json',
     },
   });
@@ -74,39 +83,74 @@ const getFieldWorkHistory = async () => {
 
 const Dashboard = () => {
 
-  const searchParams = useSearchParams()
-
   const [countryview, setCountryview] = React.useState('COUNTRYVIEW');
   const [areaview, setAreaview] = React.useState('');
   const [dashboardData, setDashboardData] = React.useState<any>([]);
+  const [subDashboardData, setSubDashboardData] = React.useState<any>([]);
   const [fieldWorkData, setFieldWorkData] = React.useState<any>([]);
   const [fieldWorkData2, setFieldWorkData2] = React.useState<any>([]);
   const [fieldWorkHistory, setFieldWorkHistory] = React.useState<any>([]);
   const [isFetch, setIsFetch] = React.useState<boolean>(false);
 
   const handleCountryViewChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+
     setCountryview(event.target.value);
-    setAreaview('N');
-    console.log(event.target.value);
+    if (event.target.value == 'COUNTRYVIEW') {
+      const fetchData = async () => {
+        try {
+          const subData = await getSubData();
+          setDashboardData(subData);
+          setIsFetch(true);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      fetchData();
+    }else{
+      setAreaview('N');
+      const fetchData = async () => {
+        try {
+          const subData = await getSubData('N');
+          setDashboardData(subData);
+          console.log(subDashboardData);
+          setIsFetch(true);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      fetchData();
+    }
 
   }
   const handleAreaViewChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setAreaview(event.target.value);
-    console.log(event.target.value);
+    setSubDashboardData(event.target.value)
+    const fetchData = async () => {
+      try {
+        const subData = await getSubData(event.target.value);
+        setDashboardData(subData);
+        setIsFetch(true);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+    // console.log(event.target.value);
   }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getData();
+        const subData = await getSubData();
         const fieldWorkData = await getCountFieldWorkData();
-        const fieldWorkData2 = await getCountFieldWorkData2();
         const fieldWorkHistory = await getFieldWorkHistory();
         setFieldWorkData(fieldWorkData);
-        setFieldWorkData2(fieldWorkData2);
         setFieldWorkHistory(fieldWorkHistory);
-        setDashboardData(data);
-        // console.log(fieldWorkData);
+        // setDashboardData(data); // ตัวแปรที่เก็บข้อมูลทั้งหมด
+        setDashboardData(subData); // sub ข้อมูลทั้งหมด
+        setSubDashboardData(subData);
+        // console.log(subDashboardData);
         setIsFetch(true);
       } catch (error) {
         console.log(error);
@@ -123,26 +167,26 @@ const Dashboard = () => {
       </div>
     );
   }
-  const dashboardFpp = (dashboardData != null || dashboardData != "") ? dashboardData?.cb_users.length : 0;
-  const dashboardPartyList = (dashboardData != null || dashboardData != "") ? dashboardData?.pl_users.length : 0;
-  const dashboardTotal = (dashboardFpp + dashboardPartyList) ? dashboardFpp + dashboardPartyList : 0;
+  const dashboardFpp = (dashboardData?.Constituencybasis != null && dashboardData?.Constituencybasis != "") ? dashboardData?.Constituencybasis : 0;
+  const dashboardPartyList = (dashboardData?.Party != null && dashboardData?.Party != "") ? dashboardData?.Party : 0;
+  const dashboardTotal = (dashboardFpp + dashboardPartyList) ? dashboardData?.Total : 0;
   const fieldWorkFpp = "-";
   const fieldWorkPartyList = "-";
   const fieldWorkTotal = "-";
-  const workCardFieldWork1 = fieldWorkData[0]?.countFieldWork1 || 0;
-  const workCardFieldWork2 = fieldWorkData[1]?.countFieldWork2 || 0;
-  const workCardFieldWork3 = fieldWorkData[2]?.countFieldWork3 || 0;
-  const workCardFieldWork4 = fieldWorkData[3]?.countFieldWork4 || 0;
-  const workCardFieldWork5 = fieldWorkData[4]?.countFieldWork5 || 0;
-  const workCardFieldWork6 = fieldWorkData[5]?.countFieldWork6 || 0;
-  const workCard2FieldWork1 = fieldWorkData2[0]?.countFieldWork1 || 0;
-  const workCard2FieldWork2 = fieldWorkData2[1]?.countFieldWork2 || 0;
-  const workCard2FieldWork3 = fieldWorkData2[2]?.countFieldWork3 || 0;
-  const workCard2FieldWork4 = fieldWorkData2[3]?.countFieldWork4 || 0;
-  const workCard2FieldWork5 = fieldWorkData2[4]?.countFieldWork5 || 0;
-  const workCard2FieldWork6 = fieldWorkData2[5]?.countFieldWork6 || 0;
-  const maleUser = 0;
-  const femaleUser = 0;
+  const workCardFieldWork1 = fieldWorkData?.count2_1 || 0;
+  const workCardFieldWork2 = fieldWorkData?.count2_2 || 0;
+  const workCardFieldWork3 = fieldWorkData?.count2_3 || 0;
+  const workCardFieldWork4 = fieldWorkData?.count2_4 || 0;
+  const workCardFieldWork5 = fieldWorkData?.count2_5 || 0;
+  const workCardFieldWork6 = fieldWorkData?.count2_6 || 0;
+  const workCard2FieldWork1 = fieldWorkData?.count1_1 || 0;
+  const workCard2FieldWork2 = fieldWorkData?.count1_2 || 0;
+  const workCard2FieldWork3 = fieldWorkData?.count1_3 || 0;
+  const workCard2FieldWork4 = fieldWorkData?.count1_4 || 0;
+  const workCard2FieldWork5 = fieldWorkData?.count1_5 || 0;
+  const workCard2FieldWork6 = fieldWorkData?.count1_6 || 0;
+  const maleUser = dashboardData?.M || 0;
+  const femaleUser = dashboardData?.F || 0;
   return (
     <div className="container mx-auto lg:mx-auto sm:mx-auto xs:mx-auto">
       <div className="bg-gray-100 p-4 lg:p-8">
@@ -151,7 +195,7 @@ const Dashboard = () => {
         </div>
         <div className="flex flex-col lg:flex-row">
           <div className="w-full lg:w-6/12 p-4">
-            <h1 className="text-3xl font-bold mb-4 text-red-600">สส. </h1>
+            <h1 className="text-3xl font-bold mb-4 text-red-600">สมาชิกสภาผู้แทนราษฎร </h1>
           </div>
           <div className="w-full lg:w-6/12 p-4 ">
             <div className="flex justify-end">

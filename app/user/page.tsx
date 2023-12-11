@@ -42,10 +42,41 @@ async function getData(user_id: string) {
   return res.json();
 }
 
+const getCountFieldWorkData = async (idcard: string) => {
+  const res = await fetch('https://api.theengage.co/getCountFieldWorkByUserIdCard/' + idcard, {
+    method: 'GET',
+    headers: {
+      'Authorization': '3f6871f77d7b4c51008232fe41ea4ebc',
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!res.ok) {
+    throw new Error('Failed to fetch');
+  }
+  // console.log(res);
+  return res.json();
+}
+const getFieldWorkHistory = async (idcard: string) => {
+  const res = await fetch('https://api.theengage.co/getFieldWorkHistoryByUserIdCard/' + idcard, {
+    method: 'GET',
+    headers: {
+      'Authorization': '3f6871f77d7b4c51008232fe41ea4ebc',
+      'Content-Type': 'application/json',
+    },
+  });
+  if (!res.ok) {
+    throw new Error('Failed to fetch');
+  }
+  // console.log(res);
+  return res.json();
+}
+
 const Page = () => {
   const searchParams = useSearchParams();
   const userId = searchParams.get("id");
   const [memberData, setMemberData] = useState<any>(null);
+  const [fieldWorkData, setFieldWorkData] = useState<any>(null);
+  const [fieldWorkHistory, setFieldWorkHistory] = useState<any>(null);
   const [isFetch, setIsFetch] = useState<boolean>(false);
   moment.locale('th');
 
@@ -57,7 +88,11 @@ const Page = () => {
 
       try {
         const userData = await getData(userId);
+        const userFieldWorkData = await getCountFieldWorkData(userData?.user?.idcard);
+        const userFieldWorkHistory = await getFieldWorkHistory(userData?.user?.idcard);
         setMemberData(userData);
+        setFieldWorkData(userFieldWorkData);
+        setFieldWorkHistory(userFieldWorkHistory);
         setIsFetch(true);
       } catch (error) {
         console.error(error);
@@ -91,7 +126,7 @@ const Page = () => {
         </div>
         <div className="flex flex-col lg:flex-row">
           <div className="w-full lg:w-6/12 p-4">
-            <h1 className="text-3xl font-bold mb-4 text-red-600">สส. </h1>
+            <h1 className="text-3xl font-bold mb-4 text-red-600">สมาชิกสภาผู้แทนราษฎร </h1>
           </div>
           <div className="w-full lg:w-6/12 p-4 ">
             <div className="flex justify-end">
@@ -389,12 +424,45 @@ const Page = () => {
                 </div>
               </div>
               <div className="w-full flex flex-wrap lg:w-12/12 p-2">
-                <ChartWork2 work1={(memberData?.skill_values && memberData?.skill_values[0]?.value) ? memberData?.skill_values[0]?.value : 0} work2={memberData?.skill_values && memberData?.skill_values[1]?.value} work3={memberData?.skill_values && memberData?.skill_values[2]?.value} work4={memberData?.skill_values && memberData?.skill_values[3]?.value} work5={memberData?.skill_values && memberData?.skill_values[4]?.value} work6={memberData?.skill_values && memberData?.skill_values[5]?.value} />
+                <ChartWork2
+                  work1={fieldWorkData?.count2_1 || 0}
+                  work2={fieldWorkData?.count2_2 || 0}
+                  work3={fieldWorkData?.count2_3 || 0}
+                  work4={fieldWorkData?.count2_4 || 0}
+                  work5={fieldWorkData?.count2_5 || 0}
+                  work6={fieldWorkData?.count2_6 || 0}
+                />
               </div>
               <div className="w-full flex flex-wrap lg:w-12/12 p-2">
-                <ChartWork1 work1={memberData?.skill_values && memberData?.skill_values[6]?.value} work2={memberData?.skill_values && memberData?.skill_values[7]?.value} work3={memberData?.skill_values && memberData?.skill_values[8]?.value} work4={memberData?.skill_values && memberData?.skill_values[9]?.value} work5={memberData?.skill_values && memberData?.skill_values[10]?.value} work6={memberData?.skill_values && memberData?.skill_values[11]?.value} />
+                <ChartWork1
+                  work1={fieldWorkData?.count1_1 || 0}
+                  work2={fieldWorkData?.count1_2 || 0}
+                  work3={fieldWorkData?.count1_3 || 0}
+                  work4={fieldWorkData?.count1_4 || 0}
+                  work5={fieldWorkData?.count1_5 || 0}
+                  work6={fieldWorkData?.count1_6 || 0}
+                />
               </div>
-              <WorkUserCardComponent userImage={userImage} key={1} subtitle={userName} title='ยังไม่มีประวัติการเยี่ยมชมพื้นที่' />
+              {
+                fieldWorkHistory?.length > 0 && fieldWorkHistory.map((element: any, index: number) => (
+                  <WorkUserCardComponent
+                    userImage={userImage}
+                    key={index}  // Use the index as the key to avoid duplicates
+                    subtitle={userName}
+                    title="TEST"
+                  />
+                ))
+              }
+              {
+                fieldWorkHistory?.length === 0 && (
+                  <WorkUserCardComponent
+                    userImage={userImage}
+                    key={1}  // Use the index as the key to avoid duplicates
+                    subtitle={userName}
+                    title="ไม่มีประวัติ FieldWork"
+                  />
+                )
+              }
               <div className="w-full flex flex-wrap lg:w-12/12 p-2">
                 <div className="w-full flex flex-wrap lg:w-12/12 pt-5">
                   <p className='text-red-500 font-bold text-xl'>เงินที่ได้รับจากพรรค</p>
