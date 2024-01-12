@@ -88,8 +88,8 @@ const Page = () => {
 
       try {
         const userData = await getData(userId);
-        const userFieldWorkData = await getCountFieldWorkData(userData?.user?.idcard);
-        const userFieldWorkHistory = await getFieldWorkHistory(userData?.user?.idcard);
+        const userFieldWorkData = await getCountFieldWorkData(userData?.user?.national_id);
+        const userFieldWorkHistory = await getFieldWorkHistory(userData?.user?.national_id);
         setMemberData(userData);
         setFieldWorkData(userFieldWorkData);
         setFieldWorkHistory(userFieldWorkHistory);
@@ -112,12 +112,110 @@ const Page = () => {
       </div>
     );
   }
-  const formattedBirthDate = (memberData?.user?.birth_date === null || memberData?.user?.birth_date === "") ? "-" : moment(memberData?.user?.birth_date).format('LL');
-  const formattedJoinDate = (memberData?.user?.join_date === null || memberData?.user?.join_date === "") ? "-" : moment(memberData?.user?.join_date).format('LL');
+  const formattedBirthDate = (memberData?.user?.birth_date === null || memberData?.user?.birth_date === "") ? "-" : moment(memberData?.user?.birth_date).add(543,'year').format('LL');
+  const formattedJoinDate = (memberData?.user?.join_date === null || memberData?.user?.join_date === "") ? "-" : moment(memberData?.user?.join_date).add(543,'year').format('LL');
   const userName = (memberData?.user?.name === null || memberData?.user?.name === "") ? "-" : memberData?.user?.name;
   const userAge = (memberData?.user?.birth_date === null || memberData?.user?.birth_date === "") ? "-" : moment().diff(memberData?.user?.birth_date, 'years');
   const userImage = (memberData?.user?.image === null || memberData?.user?.image === "") ? "./assets/img/mockupUser.png" : "https://memberofhouse.newdice.co/staticfiles/photo/" + memberData?.user?.image;
   const userZone = (memberData?.user?.zone === null || memberData?.user?.zone === "") ? "-" : memberData?.user?.zone?.province?.name + " เขต " + memberData?.user?.zone?.name;
+
+  let fieldWork1Type1 = 0;
+  let fieldWork1Type2 = 0;
+  let fieldWork1Type3 = 0;
+  let fieldWork1Type4 = 0;
+  let fieldWork1Type5 = 0;
+  let fieldWork1Type6 = 0;
+  let fieldWork1Type7 = 0;
+  let fieldWork1Type8 = 0;
+  let fieldWork1Type9 = 0;
+  let fieldWork1Type10 = 0;
+  let fieldWork1Type11 = 0;
+
+  let fieldWork2Type1 = 0;
+  let fieldWork2Type2 = 0;
+  let fieldWork2Type3 = 0;
+  let fieldWork2Type4 = 0;
+  let fieldWork2Type5 = 0;
+  let fieldWork2Type6 = 0;
+  let fieldWork2Type7 = 0;
+  let fieldWork2Type8 = 0;
+  let fieldWork2Type9 = 0;
+  let fieldWork2Type10 = 0;
+  let fieldWork2Type11 = 0;
+  let fieldWork2Type12 = 0;
+
+  for (const item of fieldWorkData){
+    if(item.name == "เศรษฐกิจ"){
+      fieldWork1Type1 = item.count
+    }
+    if(item.name == "เกษตร"){
+      fieldWork1Type2 = item.count
+    }
+    if(item.name == "เทคโนโลยี"){
+      fieldWork1Type3 = item.count
+    }
+    if(item.name == "พาณิชย์และปากท้อง"){
+      fieldWork1Type4 = item.count
+    }
+    if(item.name == "การศึกษา"){
+      fieldWork1Type5 = item.count
+    }
+    if(item.name == "กฎหมายและการปฏิรูป"){
+      fieldWork1Type6 = item.count
+    }
+    if(item.name == "ระบบสาธารณูปโภค"){
+      fieldWork1Type7 = item.count
+    }
+    if(item.name == "การท่องเที่ยว"){
+      fieldWork1Type8 = item.count
+    }
+    if(item.name == "การกีฬา"){
+      fieldWork1Type9 = item.count
+    }
+    if(item.name == "การแก้ไขปัญหาสังคม"){
+      fieldWork1Type10 = item.count
+    }
+    if(item.name == "การแก้ไขปัญหาความเหลื่อมล้ำ"){
+      fieldWork1Type11 = item.count
+    }
+    if(item.name == "งานสภา"){
+      fieldWork2Type1 = item.count
+    }
+    if(item.name == "กรรมาธิการ"){
+      fieldWork2Type2 = item.count
+    }
+    if(item.name == "งานด้านการช่วยเหลือบริการ"){
+      fieldWork2Type3 = item.count
+    }
+    if(item.name == "งานด้านการสื่อสาร"){
+      fieldWork2Type4 = item.count
+    }
+    if(item.name == "งานด้านสาธารณะประโยชน์"){
+      fieldWork2Type5 = item.count
+    }
+    if(item.name == "งานด้านต่างประเทศ"){
+      fieldWork2Type6 = item.count
+    }
+    if(item.name == "กิจกรรมพรรค"){
+      fieldWork2Type7 = item.count
+    }
+    if(item.name == "Soft Power"){
+      fieldWork2Type8 = item.count
+    }
+    if(item.name == "งานด้านสิทธิมนุษยชน"){
+      fieldWork2Type9 = item.count
+    }
+    if(item.name == "งานด้านความหลากหลายทางเพศ"){
+      fieldWork2Type10 = item.count
+    }
+    if(item.name == "งานด้านสิ่งแวดล้อม"){
+      fieldWork2Type11 = item.count
+    }
+    if(item.name == "งานด้านศิลปะและวัฒนธรรม"){
+      fieldWork2Type12 = item.count
+    }
+  }
+  
   return (
     <div className="container mx-auto">
       <div className="bg-gray-100 p-4 lg:p-8">
@@ -423,25 +521,40 @@ const Page = () => {
                   <p className='text-red-500 font-bold text-xl'>งานที่ถนัด</p>
                 </div>
               </div>
-              <div className="w-full flex flex-wrap lg:w-12/12 p-2">
-                <ChartWork2
-                  work1={fieldWorkData?.count2_1 || 0}
-                  work2={fieldWorkData?.count2_2 || 0}
-                  work3={fieldWorkData?.count2_3 || 0}
-                  work4={fieldWorkData?.count2_4 || 0}
-                  work5={fieldWorkData?.count2_5 || 0}
-                  work6={fieldWorkData?.count2_6 || 0}
+              <div className="flex flex-wrap items-center justify-center">
+                <div className="w-full flex flex-wrap lg:w-8/12 p-2">
+                  <ChartWork2
+                    work1={fieldWork1Type1 || 0}
+                    work2={fieldWork1Type2 || 0}
+                    work3={fieldWork1Type3 || 0}
+                    work4={fieldWork1Type4 || 0}
+                    work5={fieldWork1Type5 || 0}
+                    work6={fieldWork1Type6 || 0}
+                    work7={fieldWork1Type7 || 0}
+                    work8={fieldWork1Type8 || 0}
+                    work9={fieldWork1Type9 || 0}
+                    work10={fieldWork1Type10 || 0}
+                    work11={fieldWork1Type11 || 0}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center justify-center">
+              <div className="w-full flex flex-wrap lg:w-8/12 p-2">
+                <ChartWork1
+                  work1={fieldWork2Type1 || 0}
+                  work2={fieldWork2Type2 || 0}
+                  work3={fieldWork2Type3 || 0}
+                  work4={fieldWork2Type4 || 0}
+                  work5={fieldWork2Type5 || 0}
+                  work6={fieldWork2Type6 || 0}
+                  work7={fieldWork2Type7 || 0}
+                  work8={fieldWork2Type8 || 0}
+                  work9={fieldWork2Type9 || 0}
+                  work10={fieldWork2Type10 || 0}
+                  work11={fieldWork2Type11 || 0}
+                  work12={fieldWork2Type12 || 0}
                 />
               </div>
-              <div className="w-full flex flex-wrap lg:w-12/12 p-2">
-                <ChartWork1
-                  work1={fieldWorkData?.count1_1 || 0}
-                  work2={fieldWorkData?.count1_2 || 0}
-                  work3={fieldWorkData?.count1_3 || 0}
-                  work4={fieldWorkData?.count1_4 || 0}
-                  work5={fieldWorkData?.count1_5 || 0}
-                  work6={fieldWorkData?.count1_6 || 0}
-                />
               </div>
               {
                 fieldWorkHistory?.length > 0 && fieldWorkHistory.map((element: any, index: number) => (
@@ -449,7 +562,8 @@ const Page = () => {
                     userImage={userImage}
                     key={index}  // Use the index as the key to avoid duplicates
                     subtitle={userName}
-                    title="TEST"
+                    title={element.postText}
+                    postId={element.post_id}
                   />
                 ))
               }
@@ -457,7 +571,7 @@ const Page = () => {
                 fieldWorkHistory?.length === 0 && (
                   <WorkUserCardComponent
                     userImage={userImage}
-                    key={1}  // Use the index as the key to avoid duplicates
+                    key={1}
                     subtitle={userName}
                     title="ไม่มีประวัติ FieldWork"
                   />

@@ -18,6 +18,11 @@ interface ChartWork2Props {
   work4: number;
   work5: number;
   work6: number;
+  work7: number;
+  work8: number;
+  work9: number;
+  work10: number;
+  work11: number;
 }
 
 ChartJS.register(
@@ -42,13 +47,25 @@ const options = {
   },
 };
 
-const ChartWork2: React.FC<ChartWork2Props> = ({ work1, work2, work3, work4, work5, work6 }) => {
+const ChartWork2: React.FC<ChartWork2Props> = ({ work1, work2, work3, work4, work5, work6,work7,work8,work9,work10,work11 }) => {
   const [chartData, setChartData] = React.useState({
-    labels: ['เศรษฐกิจ', 'เกษตร', 'เทคโนโลยี', 'พาณิชย์และปากท้อง', 'การศึกษา', 'กฎหมายและการปฏิรูป'],
+    labels: [
+      'เศรษฐกิจ',
+      'เกษตร', 
+      'เทคโนโลยี', 
+      'พาณิชย์และปากท้อง', 
+      'การศึกษา', 
+      'กฎหมายและการปฏิรูป',
+      'ระบบสาธารณูปโภค',
+      'การท่องเที่ยว',
+      'การกีฬา',
+      'การแก้ไขปัญหาสังคม',
+      'การแก้ไขปัญหาความเหลื่อมล้ำ'
+    ],
     datasets: [
       {
         label: 'Field Work2',
-        data: [work1, work2, work3, work4, work5, work6],
+        data: [work1, work2, work3, work4, work5, work6,work7,work8,work9,work10,work11],
         backgroundColor: [
           '#CAE2F7',
         ],
@@ -59,20 +76,25 @@ const ChartWork2: React.FC<ChartWork2Props> = ({ work1, work2, work3, work4, wor
           '#F80D38',
           '#FECA57',
           '#2CA800',
+          '#FF6B6B',
+          '#FFD166',
+          '#06D6A0',
+          '#118AB2',
+          '#EF476F',
         ],
         borderWidth: 1,
       },
     ],
-    options:{
-      scales:{
-        yAxes:[{
-          ticks:{
-            beginAtZero:true
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
           }
         }],
-        xAxes:[{
-          ticks:{
-            beginAtZero:true
+        xAxes: [{
+          ticks: {
+            beginAtZero: true
           }
         }]
       }
