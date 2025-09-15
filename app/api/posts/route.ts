@@ -6,5 +6,21 @@ import pool from "@/lib/db";
 
 export async function GET (request: NextRequest, response: NextResponse){
     const [rows] = await pool.query(`SELECT Wo_Posts.postText,Wo_Users.first_name,Wo_Users.last_name,Wo_Posts.post_id FROM Wo_Posts INNER JOIN Wo_Users ON Wo_Users.user_id  = Wo_Posts.user_id`);
-    return NextResponse.json(rows);
+    // return NextResponse.json(rows,{
+    //     headers:{
+    //         "Access-Control-Allow-Origin":"*",
+    //         "Access-Control-Allow-Methods":"GET, POST, PUT, DELETE, OPTIONS",
+    //         "Access-Control-Allow-Headers":"Content-Type, Authorization"
+    //     }
+    // });
+    return new Response(JSON.stringify(rows), {
+        headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin":"*",
+            "Access-Control-Allow-Methods":"GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers":"Content-Type, Authorization"
+        },
+        status: 200,
+        statusText: "OK",
+    });
 }

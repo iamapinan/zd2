@@ -15,5 +15,21 @@ export async function GET(request: NextRequest, response: NextResponse) {
         counts.push({ [fieldName]: countValue });
     }
 
-    return NextResponse.json(counts);
+    // return NextResponse.json(counts,{
+    //     headers:{
+    //         "Access-Control-Allow-Origin":"*",
+    //         "Access-Control-Allow-Methods":"GET, POST, PUT, DELETE, OPTIONS",
+    //         "Access-Control-Allow-Headers":"Content-Type, Authorization"
+    //     }
+    // });
+    return new Response(JSON.stringify(counts), {
+        headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin":"*",
+            "Access-Control-Allow-Methods":"GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers":"Content-Type, Authorization"
+        },
+        status: 200,
+        statusText: "OK",
+    });
 }

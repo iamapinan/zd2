@@ -33,7 +33,7 @@ async function getData() {
 }
 
 const getCountFieldWorkData = async () => {
-  const res = await fetch('http://localhost:3000/api/posts/fieldwork/count', {
+  const res = await fetch('https://api.theengage.co/api/posts/fieldwork/count', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ const getCountFieldWorkData = async () => {
   return res.json();
 }
 const getCountFieldWorkData2 = async () => {
-  const res = await fetch('http://localhost:3000/api/posts/fieldwork/count2', {
+  const res = await fetch('https://api.theengage.co/api/posts/fieldwork/count2', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -59,7 +59,7 @@ const getCountFieldWorkData2 = async () => {
   return res.json();
 }
 const getFieldWorkHistory = async () => {
-  const res = await fetch('http://localhost:3000/api/posts/fieldwork', {
+  const res = await fetch('https://api.theengage.co/api/posts/fieldwork', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

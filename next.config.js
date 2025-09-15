@@ -10,6 +10,20 @@ const nextConfig = {
         }
         return config
     },
+    async headers(){
+        // add cors
+        return [
+            {
+                source: '/(.*)',
+                headers: [
+                    {
+                        key: 'Access-Control-Allow-Origin',
+                        value: '*',
+                    },
+                ],
+            },
+        ]
+    }
     // experimental: { appDir: true },
 }
 
