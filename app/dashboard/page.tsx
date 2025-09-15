@@ -16,6 +16,8 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation'
 
 import { useRouter } from 'next/navigation';
+import { fetchData } from 'next-auth/client/_utils';
+
 
 async function getData() {
   const res = await fetch('https://memberofhouse.newdice.co/api/say/getPtpUsers', {
@@ -31,11 +33,31 @@ async function getData() {
   }
   return res.json();
 }
-
-const getCountFieldWorkData = async () => {
-  const res = await fetch('https://api.theengage.co/api/posts/fieldwork/count', {
+async function getSubData(area: string = '') {
+  if (area != '') {
+    area = '?area=' + area;
+  } else {
+    area = '';
+  }
+  const res = await fetch('https://memberofhouse.newdice.co/api/say/getStatUser' + area, {
     method: 'GET',
     headers: {
+      'X-SAYAPI-KEY': '69925e25035b3aa12060eb90eaf10d1f0e26210db3d29a77dd607a10ce38cb8f',
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch');
+  }
+  return res.json();
+}
+
+const getCountFieldWorkData = async () => {
+  const res = await fetch('https://api.theengage.co/fieldWorkCount1', {
+    method: 'GET',
+    headers: {
+      'Authorization': '3f6871f77d7b4c51008232fe41ea4ebc',
       'Content-Type': 'application/json',
     },
   });
@@ -45,10 +67,11 @@ const getCountFieldWorkData = async () => {
   // console.log(res);
   return res.json();
 }
-const getCountFieldWorkData2 = async () => {
-  const res = await fetch('https://api.theengage.co/api/posts/fieldwork/count2', {
+const getCountFieldWorkArrayData = async () => {
+  const res = await fetch('https://api.theengage.co/getFieldWorkCount', {
     method: 'GET',
     headers: {
+      'Authorization': '3f6871f77d7b4c51008232fe41ea4ebc',
       'Content-Type': 'application/json',
     },
   });
@@ -59,9 +82,10 @@ const getCountFieldWorkData2 = async () => {
   return res.json();
 }
 const getFieldWorkHistory = async () => {
-  const res = await fetch('https://api.theengage.co/api/posts/fieldwork', {
+  const res = await fetch('https://api.theengage.co/getFieldWorkHistory', {
     method: 'GET',
     headers: {
+      'Authorization': '3f6871f77d7b4c51008232fe41ea4ebc',
       'Content-Type': 'application/json',
     },
   });
@@ -74,39 +98,74 @@ const getFieldWorkHistory = async () => {
 
 const Dashboard = () => {
 
-  const searchParams = useSearchParams()
-
   const [countryview, setCountryview] = React.useState('COUNTRYVIEW');
   const [areaview, setAreaview] = React.useState('');
   const [dashboardData, setDashboardData] = React.useState<any>([]);
+  const [subDashboardData, setSubDashboardData] = React.useState<any>([]);
   const [fieldWorkData, setFieldWorkData] = React.useState<any>([]);
+  const [fieldWorkArrayData, setFieldWorkArrayData] = React.useState<any>([]);
   const [fieldWorkData2, setFieldWorkData2] = React.useState<any>([]);
   const [fieldWorkHistory, setFieldWorkHistory] = React.useState<any>([]);
   const [isFetch, setIsFetch] = React.useState<boolean>(false);
 
   const handleCountryViewChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+
     setCountryview(event.target.value);
-    setAreaview('N');
-    console.log(event.target.value);
+    if (event.target.value == 'COUNTRYVIEW') {
+      const fetchData = async () => {
+        try {
+          const subData = await getSubData();
+          setDashboardData(subData);
+          setIsFetch(true);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      fetchData();
+    } else {
+      setAreaview('N');
+      const fetchData = async () => {
+        try {
+          const subData = await getSubData('N');
+          setDashboardData(subData);
+          console.log(subDashboardData);
+          setIsFetch(true);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      fetchData();
+    }
 
   }
   const handleAreaViewChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setAreaview(event.target.value);
-    console.log(event.target.value);
+    setSubDashboardData(event.target.value)
+    const fetchData = async () => {
+      try {
+        const subData = await getSubData(event.target.value);
+        setDashboardData(subData);
+        setIsFetch(true);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+    // console.log(event.target.value);
   }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getData();
+        const subData = await getSubData();
         const fieldWorkData = await getCountFieldWorkData();
-        const fieldWorkData2 = await getCountFieldWorkData2();
+        const fieldWorkArrayData = await getCountFieldWorkArrayData();
         const fieldWorkHistory = await getFieldWorkHistory();
         setFieldWorkData(fieldWorkData);
-        setFieldWorkData2(fieldWorkData2);
         setFieldWorkHistory(fieldWorkHistory);
-        setDashboardData(data);
-        // console.log(fieldWorkData);
+        setFieldWorkArrayData(fieldWorkArrayData);
+        setDashboardData(subData); // sub ข้อมูลทั้งหมด
+        setSubDashboardData(subData);
         setIsFetch(true);
       } catch (error) {
         console.log(error);
@@ -123,26 +182,44 @@ const Dashboard = () => {
       </div>
     );
   }
-  const dashboardFpp = (dashboardData != null || dashboardData != "") ? dashboardData?.cb_users.length : 0;
-  const dashboardPartyList = (dashboardData != null || dashboardData != "") ? dashboardData?.pl_users.length : 0;
-  const dashboardTotal = (dashboardFpp + dashboardPartyList) ? dashboardFpp + dashboardPartyList : 0;
+  const dashboardFpp = (dashboardData?.Constituencybasis != null && dashboardData?.Constituencybasis != "") ? dashboardData?.Constituencybasis : 0;
+  const dashboardPartyList = (dashboardData?.Party != null && dashboardData?.Party != "") ? dashboardData?.Party : 0;
+  const dashboardChairperson = (dashboardData?.Chairperson != null && dashboardData?.Chairperson != "") ? dashboardData?.Chairperson : 0;
+  const dashboardCommittee = (dashboardData?.Committee != null && dashboardData?.Committee != "") ? dashboardData?.Committee + dashboardData?.Chairperson : 0;
+  const dashboardTotal = (dashboardFpp + dashboardPartyList) ? dashboardData?.Total : 0;
+  const dashboardTotalMoHR = (dashboardFpp + dashboardPartyList) ? dashboardFpp + dashboardPartyList : 0;
   const fieldWorkFpp = "-";
   const fieldWorkPartyList = "-";
   const fieldWorkTotal = "-";
-  const workCardFieldWork1 = fieldWorkData[0]?.countFieldWork1 || 0;
-  const workCardFieldWork2 = fieldWorkData[1]?.countFieldWork2 || 0;
-  const workCardFieldWork3 = fieldWorkData[2]?.countFieldWork3 || 0;
-  const workCardFieldWork4 = fieldWorkData[3]?.countFieldWork4 || 0;
-  const workCardFieldWork5 = fieldWorkData[4]?.countFieldWork5 || 0;
-  const workCardFieldWork6 = fieldWorkData[5]?.countFieldWork6 || 0;
-  const workCard2FieldWork1 = fieldWorkData2[0]?.countFieldWork1 || 0;
-  const workCard2FieldWork2 = fieldWorkData2[1]?.countFieldWork2 || 0;
-  const workCard2FieldWork3 = fieldWorkData2[2]?.countFieldWork3 || 0;
-  const workCard2FieldWork4 = fieldWorkData2[3]?.countFieldWork4 || 0;
-  const workCard2FieldWork5 = fieldWorkData2[4]?.countFieldWork5 || 0;
-  const workCard2FieldWork6 = fieldWorkData2[5]?.countFieldWork6 || 0;
-  const maleUser = 0;
-  const femaleUser = 0;
+  const workCardFieldWork1 = fieldWorkData?.count2_1 || 0;
+  const workCardFieldWork2 = fieldWorkData?.count2_2 || 0;
+  const workCardFieldWork3 = fieldWorkData?.count2_3 || 0;
+  const workCardFieldWork4 = fieldWorkData?.count2_4 || 0;
+  const workCardFieldWork5 = fieldWorkData?.count2_5 || 0;
+  const workCardFieldWork6 = fieldWorkData?.count2_6 || 0;
+  const workCardFieldWork7 = fieldWorkData?.count2_7 || 0;
+  const workCardFieldWork8 = fieldWorkData?.count2_8 || 0;
+  const workCardFieldWork9 = fieldWorkData?.count2_9 || 0;
+  const workCardFieldWork10 = fieldWorkData?.count2_10 || 0;
+  const workCardFieldWork11 = fieldWorkData?.count2_11 || 0;
+  const workCardFieldWork12 = fieldWorkData?.count2_12 || 0;
+
+
+
+  const workCard2FieldWork1 = fieldWorkData?.count1_1 || 0;
+  const workCard2FieldWork2 = fieldWorkData?.count1_2 || 0;
+  const workCard2FieldWork3 = fieldWorkData?.count1_3 || 0;
+  const workCard2FieldWork4 = fieldWorkData?.count1_4 || 0;
+  const workCard2FieldWork5 = fieldWorkData?.count1_5 || 0;
+  const workCard2FieldWork6 = fieldWorkData?.count1_6 || 0;
+  const workCard2FieldWork7 = fieldWorkData?.count1_7 || 0;
+  const workCard2FieldWork8 = fieldWorkData?.count1_8 || 0;
+  const workCard2FieldWork9 = fieldWorkData?.count1_9 || 0;
+  const workCard2FieldWork10 = fieldWorkData?.count1_10 || 0;
+  const workCard2FieldWork11 = fieldWorkData?.count1_11 || 0;
+
+  const maleUser = dashboardData?.M || 0;
+  const femaleUser = dashboardData?.F || 0;
   return (
     <div className="container mx-auto lg:mx-auto sm:mx-auto xs:mx-auto">
       <div className="bg-gray-100 p-4 lg:p-8">
@@ -151,7 +228,7 @@ const Dashboard = () => {
         </div>
         <div className="flex flex-col lg:flex-row">
           <div className="w-full lg:w-6/12 p-4">
-            <h1 className="text-3xl font-bold mb-4 text-red-600">สส. </h1>
+            <h1 className="text-3xl font-bold mb-4 text-red-600">สมาชิกสภาผู้แทนราษฎร </h1>
           </div>
           <div className="w-full lg:w-6/12 p-4 ">
             <div className="flex justify-end">
@@ -215,10 +292,14 @@ const Dashboard = () => {
                 </div>
               )}
             </div>
-
+            <div className="flex flex-wrap">
+              <div className="w-full sm:w-full lg:w-full py-2 pr-2">
+                <CustomCard number={dashboardCommittee} title="กรรมการบริหารพรรค" jobs={fieldWorkTotal} />
+              </div>
+            </div>
             <div className="flex flex-wrap">
               <div className="w-full sm:w-6/12 lg:w-4/12 py-2 pr-2">
-                <CustomCard number={dashboardTotal} title="ส.ส.ทั้งหมด" jobs={fieldWorkTotal} />
+                <CustomCard number={dashboardTotalMoHR} title="ส.ส.ทั้งหมด" jobs={fieldWorkTotal} />
               </div>
               <div className="w-full sm:w-6/12 lg:w-4/12 py-2 pr-2">
                 <CustomCard number={dashboardPartyList} title="ส.ส.บัญชีรายชื่อ" jobs={fieldWorkPartyList} />
@@ -227,45 +308,68 @@ const Dashboard = () => {
                 <CustomCard number={dashboardFpp} title="ส.ส.เขต" jobs={fieldWorkFpp} />
               </div>
             </div>
-            <div className="flex flex-wrap">
-              <div className="w-full lg:w-6/12 p-2">
-                <ChartWork1 work1={workCardFieldWork1} work2={workCardFieldWork2} work3={workCardFieldWork3} work4={workCardFieldWork4} work5={workCardFieldWork5} work6={workCardFieldWork6} />
-              </div>
-              <div className="w-full lg:w-6/12 p-2">
-                <ChartWork2 work1={workCard2FieldWork1} work2={workCard2FieldWork2} work3={workCard2FieldWork3} work4={workCard2FieldWork4} work5={workCard2FieldWork5} work6={workCard2FieldWork6} />
+            <div className="flex flex-wrap justify-center items-center">
+              <div className="w-full lg:w-8/12 p-2 ">
+                <ChartWork1
+                  work1={workCardFieldWork1}
+                  work2={workCardFieldWork2}
+                  work3={workCardFieldWork3}
+                  work4={workCardFieldWork4}
+                  work5={workCardFieldWork5}
+                  work6={workCardFieldWork6}
+                  work7={workCardFieldWork7}
+                  work8={workCardFieldWork8}
+                  work9={workCardFieldWork9}
+                  work10={workCardFieldWork10}
+                  work11={workCardFieldWork11}
+                  work12={workCardFieldWork12}
+                />
               </div>
             </div>
-            <div className="flex flex-wrap py-4">
-              <div className="w-full sm:w-4/12 lg:w-4/12 px-1"><WorkCard number={workCardFieldWork1} title='งานสภา' cost='-' /></div>
-              <div className="w-full sm:w-4/12 lg:w-4/12 px-1"><WorkCard number={workCardFieldWork2} title='งานกฎหมาย' cost='-' /></div>
-              <div className="w-full sm:w-4/12 lg:w-4/12 px-1"><WorkCard number={workCardFieldWork3} title='งานการช่วยเหลือบริการ' cost='-' /></div>
-            </div>
-            <div className="flex flex-wrap py-4">
-              <div className="w-full sm:w-4/12 lg:w-4/12 px-1"><WorkCard number={workCardFieldWork4} title='งานการสื่อสาร' cost='-' /></div>
-              <div className="w-full sm:w-4/12 lg:w-4/12 px-1"><WorkCard number={workCardFieldWork5} title='งานสาธารณะประโยชน์' cost='-' /></div>
-              <div className="w-full sm:w-4/12 lg:w-4/12 px-1"><WorkCard number={workCardFieldWork6} title='งานต่างประเทศ' cost='-' /></div>
+            <div className="flex flex-wrap justify-center items-center">
+              <div className="w-full lg:w-8/12 p-2">
+                <ChartWork2
+                  work1={workCard2FieldWork1}
+                  work2={workCard2FieldWork2}
+                  work3={workCard2FieldWork3}
+                  work4={workCard2FieldWork4}
+                  work5={workCard2FieldWork5}
+                  work6={workCard2FieldWork6}
+                  work7={workCard2FieldWork7}
+                  work8={workCard2FieldWork8}
+                  work9={workCard2FieldWork9}
+                  work10={workCard2FieldWork10}
+                  work11={workCard2FieldWork11}
+                />
+              </div>
             </div>
 
-            <div className="flex flex-wrap">
-              <div className="w-full h-full flex-shrink-0 rounded-xl bg-white shadow-md p-4">
-                <div className="flex flex-wrap pt-3">
-                  <div className="w-full lg:w-6/12">
-                    <p className='text-red-500 text-semibold pl-4'>กิจกรรมลงพื้นที่ ส.ส.</p>
-                  </div>
-                  <div className="w-full lg:w-6/12 flex justify-end">
-                    <p className='text-black-500 text-semibold pl-4'>ดูทั้งหมด</p>
-                  </div>
-                </div>
-                <div className="flex flex-wrap mt-4">
-                  {/* <BlankComponent /> */}
-                  {
-                    fieldWorkHistory?.map((item: any) => (
-                      <HistoryEngageComponent postText={item.postText} userName={item.first_name + " " + item.last_name} postId={item.post_id} key={item.post_id} />
-                    ))
-                  }
-                  {/* <HistoryEngageComponent postText='test' userName='text' /> */}
-                </div>
-              </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col lg:flex-row">
+          <div className="w-full lg:w-6/12 p-4">
+            <div className="flex flex-wrap py-4">
+              <div className="w-full sm:w-4/12 lg:w-4/12 px-1"><WorkCard number={workCardFieldWork1} title='สภา' cost='-' /></div>
+              <div className="w-full sm:w-4/12 lg:w-4/12 px-1"><WorkCard number={workCardFieldWork2} title='กฎหมาย' cost='-' /></div>
+              <div className="w-full sm:w-4/12 lg:w-4/12 px-1"><WorkCard number={workCardFieldWork3} title='การช่วยเหลือบริการ' cost='-' /></div>
+            </div>
+            <div className="flex flex-wrap py-4">
+              <div className="w-full sm:w-4/12 lg:w-4/12 px-1"><WorkCard number={workCardFieldWork4} title='การสื่อสาร' cost='-' /></div>
+              <div className="w-full sm:w-4/12 lg:w-4/12 px-1"><WorkCard number={workCardFieldWork5} title='สาธารณะประโยชน์' cost='-' /></div>
+              <div className="w-full sm:w-4/12 lg:w-4/12 px-1"><WorkCard number={workCardFieldWork6} title='ต่างประเทศ' cost='-' /></div>
+            </div>
+          </div>
+          <div className="w-full lg:w-6/12 p-4">
+          <div className="flex flex-wrap py-4">
+              <div className="w-full sm:w-4/12 lg:w-4/12 px-1"><WorkCard number={workCardFieldWork7} title='กิจกรรมพรรค' cost='-' /></div>
+              <div className="w-full sm:w-4/12 lg:w-4/12 px-1"><WorkCard number={workCardFieldWork8} title='Soft Power' cost='-' /></div>
+              <div className="w-full sm:w-4/12 lg:w-4/12 px-1"><WorkCard number={workCardFieldWork9} title='ด้านสิทธิมนุษยชน' cost='-' /></div>
+            </div>
+            <div className="flex flex-wrap py-4">
+              <div className="w-full sm:w-4/12 lg:w-4/12 px-1"><WorkCard number={workCardFieldWork10} title='ความหลากหลายทางเพศ' cost='-' /></div>
+              <div className="w-full sm:w-4/12 lg:w-4/12 px-1"><WorkCard number={workCardFieldWork11} title='ด้านสิ่งแวดล้อม' cost='-' /></div>
+              <div className="w-full sm:w-4/12 lg:w-4/12 px-1"><WorkCard number={workCardFieldWork12} title='ด้านศิลปะและวัฒนธรรม' cost='-' /></div>
             </div>
           </div>
         </div>
