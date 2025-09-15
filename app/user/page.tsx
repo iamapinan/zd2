@@ -10,8 +10,8 @@ import { useSearchParams } from 'next/navigation';
 import ChartWork1 from '@/app/components/chartWork1';
 import ChartWork2 from '@/app/components/chartWork2';
 import ListComponent from '@/app/components/listComponent';
-import MoneyPartyComponent from '@/app/user/components/moneyPartyComponent';
-import WorkUserCardComponent from '@/app/user/components/workUserCardComponent';
+import MoneyPartyComponent from './components/moneyPartyComponent';
+import WorkUserCardComponent from './components/workUserCardComponent';
 
 interface PageProps {
   data: any;
@@ -220,7 +220,7 @@ const Page = () => {
     <div className="container mx-auto">
       <div className="bg-gray-100 p-4 lg:p-8">
         <div className="p-4">
-          <Image src="./assets/img/pheuthaiparty2.png" width={156} height={24} alt="Logo" className="h-6" />
+          <Image src="/assets/img/zd-banner.jpg" width={156} height={24} alt="Logo" className="h-6" />
         </div>
         <div className="flex flex-col lg:flex-row">
           <div className="w-full lg:w-6/12 p-4">
@@ -246,10 +246,10 @@ const Page = () => {
                 </div>
                 <div className="w-full flex flex-col lg:w-6/12 p-2">
                   <p className='text-xl text-black font-black mb-3'>{memberData?.user?.name || ''}</p>
-                  <p className='text-md text-black font-black mb-3'>{(memberData?.user?.type === "CONSTITUENCYBASIS") ? 'สส.แบบแบ่งเขต' : 'สส.บัญชีรายชื่อ' || ''}</p>
+                  <p className='text-md text-black font-black mb-3'>{(memberData?.user?.type === "CONSTITUENCYBASIS") ? 'สส.แบบแบ่งเขต' : 'สส.บัญชีรายชื่อ'}</p>
                   <p className='text-md font-black mb-3'>จังหวัดที่เกิด : {memberData?.user?.birthplace || ''}</p>
                   <p className='text-md font-black mb-3'>เลขสมาชิกพรรค : {memberData?.user?.party_member_no || '-'}</p>
-                  <p className='text-md font-black mb-3'>วันเดือนปีที่เป็นสมาชิกพรรค : {(memberData?.user?.join_date != null || memberData?.user?.join_date != "") ? formattedJoinDate : "-"}</p>
+                  <p className='text-md font-black mb-3'>วันเดือนปีที่เป็นสมาชิกพรรค : {(memberData?.user?.join_date != null && memberData?.user?.join_date != "") ? formattedJoinDate : "-"}</p>
 
                 </div>
               </div>

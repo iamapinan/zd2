@@ -42,3 +42,25 @@ div {
     )
     rgb(var(--background-start-rgb)); */
 }
+
+/* เปลี่ยนสีแดงเป็นสีดำและเพิ่มพื้นหลังสีเหลือง */
+body {
+  background-color: #FDBE00 !important; /* พื้นหลังสีเหลือง */
+}
+
+.text-red-600,
+.text-red-500 {
+  color: #000000 !important; /* เปลี่ยนสีแดงเป็นสีดำ */
+}
+
+.bg-red-500 {
+  background-color: #000000 !important; /* เปลี่ยนพื้นหลังสีแดงเป็นสีดำ */
+}
+
+.border-red-500 {
+  border-color: #000000 !important; /* เปลี่ยนสีเส้นขอบแดงเป็นสีดำ */
+}
+
+.hover\:bg-red-500:hover {
+  background-color: #000000 !important; /* เปลี่ยนสีพื้นหลังเมื่อ hover จากแดงเป็นดำ */
+}

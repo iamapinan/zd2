@@ -223,8 +223,8 @@ const Dashboard = () => {
   return (
     <div className="container mx-auto lg:mx-auto sm:mx-auto xs:mx-auto">
       <div className="bg-gray-100 p-4 lg:p-8">
-        <div className="p-4">
-          <Image src="./assets/img/pheuthaiparty2.png" width={156} height={24} alt="Logo" className="h-6" />
+        <div className="p-2">
+          <Image src="/assets/img/zd-banner.jpg" width={400} height={94} alt="Logo" className="mx-auto" />
         </div>
         <div className="flex flex-col lg:flex-row">
           <div className="w-full lg:w-6/12 p-4">

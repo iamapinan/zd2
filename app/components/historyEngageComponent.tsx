@@ -19,7 +19,7 @@ const HistoryEngageComponent: React.FC<HistoryEngageComponentProps> = ({postText
             window.open(`https://theengage.co/post/${postId}`,'_blank');
         }}
         >
-            <Image src={'./assets/img/mockupUser.png'} alt='mockupUser' width={50} height={50} className="mr-3 rounded-md"></Image>
+            <Image src={'/assets/img/mockupUser.png'} alt='mockupUser' width={50} height={50} className="mr-3 rounded-md"></Image>
             <div>
                 <p className='text-black pt-5'>{limitPostText(postText)}</p>
                 <p className='text-gray pt-2 pb-5'>{userName}</p>

@@ -10,7 +10,7 @@ export default function Layout({ children }: LayoutProps) {
       <head>
         <meta charSet="utf-8" />
         <link rel="icon" href="./assets/img/mini-logo.png" />
-        <title>Dashboard เพื่อไทย</title>
+        <title>Dashboard พรรคเศรษฐกิจ</title>
       </head>
       <body suppressHydrationWarning={true}>{children}</body>
     </html>

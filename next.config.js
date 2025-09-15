@@ -1,14 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
-    // output: 'export',
-    assetPrefix: './',
-    images: { unoptimized: true },
-    webpack: (config, { isServer }) => {
-        if (!isServer) {
-            config.resolve.fallback.fs = false
-        }
-        return config
+    output: 'standalone',
+    trailingSlash: true,
+    // Ensure static files are handled correctly in Docker
+    assetPrefix: process.env.NODE_ENV === 'production' ? '' : '',
+    images:{
+        unoptimized: true,
     },
     async headers(){
         // add cors
@@ -23,7 +21,9 @@ const nextConfig = {
                 ],
             },
         ]
-    }
+    },
+    // Enable static file serving
+    staticPageGenerationTimeout: 1000,
     // experimental: { appDir: true },
 }
 

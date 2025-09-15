@@ -1,12 +1,12 @@
 {
-  "name": "pt-dashboard",
+  "name": "zd-dashboard",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -p 3000",
-    "start-prod": "next start -p $PORT",
+    "start": "next start -p 5002",
+    "start-prod": "node --PORT=5002 .next/standalone/server.js",
     "lint": "next lint"
   },
   "dependencies": {

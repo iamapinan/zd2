@@ -129,7 +129,7 @@ const InfoCard: React.FC<infoCardProps> = ({ dataInfo }) => {
                         <p className="text-#000 font-bold">นางสาว**** *****</p>
                     </div>
                     <div className="w-full flex lg:w-4/12">
-                        <p className="text-#000 font-bold">ส.ส. พรรคเพื่อไทย </p>
+                        <p className="text-#000 font-bold">ส.ส. พรรคเศรษฐกิจ </p>
                     </div>
                     <div className="w-full flex lg:w-4/12">
                         <p className="text-#000 font-bold">พี่สาว</p>
@@ -140,7 +140,7 @@ const InfoCard: React.FC<infoCardProps> = ({ dataInfo }) => {
                         <p className="text-#000 font-bold">นาย**** *****</p>
                     </div>
                     <div className="w-full flex lg:w-4/12">
-                        <p className="text-#000 font-bold">ส.ส. พรรคเพื่อไทย </p>
+                        <p className="text-#000 font-bold">ส.ส. พรรคเศรษฐกิจ </p>
                     </div>
                     <div className="w-full flex lg:w-4/12">
                         <p className="text-#000 font-bold">บิดา</p>

@@ -19,7 +19,7 @@ const Login = () => {
         <div className="flex h-screen items-center justify-center bg-red-500">
             <div className="bg-white p-8 rounded shadow-md w-96">
                 <div className="flex justify-center py-6">
-                    <Image src="./assets/img/pheuthaiparty2.png" width={156} height={24} alt="Logo" className="h-6" />
+                    <Image src="/assets/img/zd-banner.jpg" width={156} height={24} alt="Logo" className="h-6" />
                 </div>
                 <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">เข้าสู่ระบบ</h2>
                 <div className="mb-4">
