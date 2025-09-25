@@ -1,0 +1,13 @@
+# Set environment variables
+DATABASE_URL="postgres://user:password@localhost:5432/mydatabase"
+SECRET_KEY="mysecretkey"
+DEBUG=True
+BASE_URL="ptparty/"
+MYSQL_HOST="127.0.0.1"
+MYSQL_PORT="3306"
+MYSQL_DATABASE="newdice_says"
+MYSQL_USER="root"
+MYSQL_PASSWORD="Dnew@superadmin1234"
+PORT=5002
+NEXTAUTH_URL="http://localhost:5002"
+NEXTAUTH_SECRET="YNrOIsBV3WdVm6iXWB1VvhHsXUiHfEiIN89J+rX3uh8="
