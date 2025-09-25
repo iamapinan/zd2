@@ -7,9 +7,9 @@ import 'moment/locale/th';
 import InfoCard from './components/infoCard';
 import HistoryCard from './components/historyCard';
 import { useSearchParams } from 'next/navigation';
-import ChartWork1 from '@/app/components/chartWork1';
-import ChartWork2 from '@/app/components/chartWork2';
-import ListComponent from '@/app/components/listComponent';
+import ChartWork1 from '../components/chartWork1';
+import ChartWork2 from '../components/chartWork2';
+import ListComponent from '../components/listComponent';
 import MoneyPartyComponent from './components/moneyPartyComponent';
 import WorkUserCardComponent from './components/workUserCardComponent';
 

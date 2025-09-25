@@ -1,8 +1,8 @@
 import React from 'react';
-import ChartWork1 from '@/app/components/chartWork1';
-import ChartWork2 from '@/app/components/chartWork2';
-import ListComponent from '@/app/components/listComponent';
-import ListMoney from '@/app/components/listMoney';
+import ChartWork1 from '../../components/chartWork1';
+import ChartWork2 from '../../components/chartWork2';
+import ListComponent from '../../components/listComponent';
+import ListMoney from '../../components/listMoney';
 
 interface HistoryCardProps {
     dataInfo1 : any
